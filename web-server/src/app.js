@@ -48,6 +48,22 @@ app.get('/weather', (req, res) => {
     })
 })
 
+app.get('/help/*', (req, res) => {
+    res.render('404page', {
+        title: '404',
+        name: 'Jea Lee',
+        errorMessage: 'Help article not found'
+    })
+})
+
+app.get('*', (req, res) => {
+    res.render('404page', {
+        title: '404',
+        name: 'Jea Lee',
+        errorMessage: 'Page not found'
+    }) //you match the first argument with the file name of .hbs 
+})
+
 
 app.listen(3000, () => {
     console.log('Server is up on port 3000.')
