@@ -26,7 +26,7 @@ weatherForm.addEventListener('submit', (e) => {
         '. It is currently ' +
         data.forecast.temperature +
         ' degrees out. It feels like ' +
-        data.forecast.feelslike + '.'
+        data.forecast.feelslike + '.' + ' The humidity is ' + data.forecast.humidity + '%.'
         }
     })
 })
