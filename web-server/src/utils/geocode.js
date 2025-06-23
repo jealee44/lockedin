@@ -1,7 +1,7 @@
 const request = require('request')
 
 const geocode = (address, callback) => {
-  const url = 'https://api.mapbox.com/search/geocode/v6/forward?q=' + encodeURIComponent(address) + '&access_token=pk.eyJ1IjoiamVhbGVlNDQiLCJhIjoiY21idm9wb2Q5MGc2bDJtb3M4dmlwdzZjNCJ9.e6usXadXOHqIPfN6N6745A'
+  const url = 'https://api.mapbox.com/search/geocode/v6/forward?q=' + encodeURIComponent(address) + '&access_token=pk.eyJ1IjoiamVhbGVlNDQ0IiwiYSI6ImNtYzhlcWN5MjB2ZmQyb3EyOG5ybDg1a2cifQ.WaZ1Eg92T_Idd7pFEWorJQ'
 
   request({ url, json: true }, (error, response = {}) => {
     const body = response.body || {};
