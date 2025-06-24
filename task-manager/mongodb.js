@@ -8,28 +8,26 @@ const { MongoClient, ObjectId } = require('mongodb') //shorthand way from above
 const connectionURL = 'mongodb://127.0.0.1:27017'
 const databaseName = 'task-manager'
 
-const id = new ObjectId()
-
  
-MongoClient.connect(connectionURL)
-  .then(client => {
-    const db = client.db(databaseName);
+// MongoClient.connect(connectionURL)
+//   .then(client => {
+//     const db = client.db(databaseName);
 
-    return db.collection('users').insertOne({
-      _id: id,
-      name: 'Andrea',
-      age: 26
-    })
-      .then(result => {
-        console.log('Inserted ID:', result.insertedId);
-        return client.close();
-      });
-  })
-  .catch(err => {
-    console.log('Unable to connect to database!', err);
-  });
+//     return db.collection('users').insertOne({
+//       _id: id,
+//       name: 'Andrea',
+//       age: 26
+//     })
+//       .then(result => {
+//         console.log('Inserted ID:', result.insertedId);
+//         return client.close();
+//       });
+//   })
+//   .catch(err => {
+//     console.log('Unable to connect to database!', err);
+//   });
 
-// const client = new MongoClient(connectionURL);
+const client = new MongoClient(connectionURL, { serverSelectionTimeoutMS: 2000 });
 
 // async function run() {
 //     try {
@@ -50,3 +48,57 @@ MongoClient.connect(connectionURL)
 //         await client.close();
 //     }
 // } run ().catch(console.dir)
+
+// async function run() {
+//     try {
+//         await client.connect()
+//         const db = client.db(databaseName);
+//         const users = db.collection('users');
+
+//         // const result = await users.findOne({ _id: new ObjectId("685ae8cd239c6f79975932e7")});
+
+//         const docs = await users.find({ age: 27 }).toArray()
+//         console.log(docs)
+
+//         const count = await users.countDocuments({ age: 27 })
+//         console.log(count)
+
+//         // console.log(result)
+//     } finally {
+//         await client.close();
+//     }
+// } run().catch(console.dir)
+
+
+// client.connect()
+// .then(() => {
+//     const db = client.db(databaseName);
+//     const users = db.collection('users');
+//     return users.findOne({ _id: new ObjectId("685ae8cd239c6f79975932e7")});
+// })
+// .then(result => {
+//     console.log(result)
+// })
+// .catch(err => {
+//     console.error('Database operation failed: ', err)
+// })
+// .finally(() => {
+//     client.close();
+// })
+
+async function runTasks() {
+    try {
+        await client.connect();
+        const db = client.db(databaseName)
+        const tasks = db.collection('tasks');
+
+        const result = await tasks.findOne({ _id: new ObjectId('685ad0eff75d67661aebac18')})
+        console.log(result)
+
+        const docs = await tasks.find({completed: true}).toArray();
+        console.log(docs)
+
+    } finally {
+        await client.close();
+    }
+} runTasks().catch(console.dir)
