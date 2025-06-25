@@ -103,18 +103,38 @@ const client = new MongoClient(connectionURL, { serverSelectionTimeoutMS: 2000 }
 //     }
 // } runTasks().catch(console.dir)
 
-async function updateUser() {
+// async function updateUser() {
+//     try {
+//         await client.connect();
+//         const db = client.db(databaseName);
+//         const users = db.collection('users');
+
+//         const result = await users.updateOne({ _id: new ObjectId('685a05d4b0cd1e0e7b531a8a')}, 
+//             {$set: {
+//                 name: 'Pike'
+//             }})
+//         console.log(result)
+//     } finally {
+//         await client.close();
+//     }
+// } updateUser().catch(console.dir)
+
+async function updateTasks() {
     try {
         await client.connect();
         const db = client.db(databaseName);
-        const users = db.collection('users');
+        const tasks = db.collection('tasks');
 
-        const result = await users.updateOne({ _id: new ObjectId('685a05d4b0cd1e0e7b531a8a')}, 
-            {$set: {
-                name: 'Pike'
-            }})
+        const filter = { completed: false }
+        const updateDocs = {
+            $set: {
+                completed: true
+            }
+        }
+
+        const result = await tasks.updateMany(filter, updateDocs)
         console.log(result)
     } finally {
-        await client.close();
+        await client.close()
     }
-} updateUser().catch(console.dir)
+}updateTasks().catch(console.dir)
