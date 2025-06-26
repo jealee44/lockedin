@@ -119,22 +119,37 @@ const client = new MongoClient(connectionURL, { serverSelectionTimeoutMS: 2000 }
 //     }
 // } updateUser().catch(console.dir)
 
-async function updateTasks() {
+// async function updateTasks() {
+//     try {
+//         await client.connect();
+//         const db = client.db(databaseName);
+//         const tasks = db.collection('tasks');
+
+//         const filter = { completed: false }
+//         const updateDocs = {
+//             $set: {
+//                 completed: true
+//             }
+//         }
+
+//         const result = await tasks.updateMany(filter, updateDocs)
+//         console.log(result)
+//     } finally {
+//         await client.close()
+//     }
+// }updateTasks().catch(console.dir)
+
+async function deleteUsers() {
     try {
         await client.connect();
         const db = client.db(databaseName);
-        const tasks = db.collection('tasks');
+        const users = db.collection('users');
+        const query = { age: 27 };
 
-        const filter = { completed: false }
-        const updateDocs = {
-            $set: {
-                completed: true
-            }
-        }
+        const deletedDocs = await users.deleteMany(query)
+        console.log("Deleted " + deletedDocs.deletedCount + " documents.");
 
-        const result = await tasks.updateMany(filter, updateDocs)
-        console.log(result)
     } finally {
-        await client.close()
+        await client.close();
     }
-}updateTasks().catch(console.dir)
+} deleteUsers().catch(console.dir)
