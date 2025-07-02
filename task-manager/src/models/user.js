@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcrypt')
 const jwt = require('jsonwebtoken')
+const Tasks = require('./task')
 
 const userSchema = new mongoose.Schema({
   name: {
@@ -47,6 +48,12 @@ const userSchema = new mongoose.Schema({
       required: true
     }
   }]
+})
+
+userSchema.virtual('tasks', {
+  ref: 'Tasks',
+  localField: '_id',
+  foreignField: 'owner'
 })
 
 userSchema.methods.toJSON = function () {
@@ -98,6 +105,24 @@ userSchema.pre('save', async function (next) {
 
   next()
 })
+
+//Delete user tasks when user is removed
+//.REMOVE IS DEPRECATED SO JUST MAKE THIS IN DELETE ROUTER INSTEAD OR YOU WOULD USE 
+// userSchema.pre('remove', async function (next) {
+//   const user = this;
+//   await Tasks.deleteMany({ owner: user._id })
+
+//   next()
+// })
+
+// userSchema.pre('findOneAndDelete', async function (next) {
+//   const user = await this.model.findOne(this.getFilter());
+//   if (user) {
+//     await Tasks.deleteMany({ owner: user._id });
+//   }
+//   next();
+// }); // would use this instead and then use User.findOneAndDelete({_id: req.user._id}) in router 
+
 
 const User = mongoose.model('User', userSchema);
 
