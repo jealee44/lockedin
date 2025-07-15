@@ -1,17 +1,20 @@
-const express = require('express')
-const http = require('http')
-const path = require('path')
-const app = express();
-const socketio = require('socket.io')
-const Filter = require('bad-words')
+import express from 'express'
+import http from 'http'
+import path from 'path'
+import { fileURLToPath } from 'url'
+import { dirname } from 'path'
+import { Server } from 'socket.io'
+import { Filter } from 'bad-words'
 
+const __filename = fileURLToPath(import.meta.url)
+const __dirname = dirname(__filename)
 
+const app = express()
 const server = http.createServer(app)
-const io = socketio(server)
+const io = new Server(server)
 
-const port = process.env.PORT || 3000 
+const port = process.env.PORT || 3000
 const publicDirectoryPath = path.join(__dirname, '../public')
-
 app.use(express.static(publicDirectoryPath))
 
 io.on('connection', (socket) => {
@@ -28,19 +31,20 @@ io.on('connection', (socket) => {
         }
 
         io.emit('message', message)
+        callback() // acknowledge success
+    })
+
+    socket.on('sendLocation', (position, callback) => {
+        const url = `https://www.google.com/maps?q=${position.latitude},${position.longitude}`
+        
+        io.emit('message', url)
         callback()
     })
 
-    socket.on('disconnect', () =>{
+    socket.on('disconnect', () => {
         io.emit('message', 'A user has left')
     })
-
-   socket.on('sendLocation', (position) => {
-    io.emit('message', `https://www.google.com/maps?q=${position.latitude},${position.longitude}`)
-    })
 })
-
-
 
 server.listen(port, () => {
     console.log(`Listening on port ${port}!`)
