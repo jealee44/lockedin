@@ -5,6 +5,7 @@ import { fileURLToPath } from 'url'
 import { dirname } from 'path'
 import { Server } from 'socket.io'
 import { Filter } from 'bad-words'
+import { generateLocationMessage, generateMessage } from './utils/messages.js'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
@@ -20,8 +21,8 @@ app.use(express.static(publicDirectoryPath))
 io.on('connection', (socket) => {
     console.log('New WebSocket connection')
 
-    socket.emit('message', 'Welcome')
-    socket.broadcast.emit('message', 'A new user has joined!')
+    socket.emit('message', generateMessage('Welcome!'))
+    socket.broadcast.emit('message', generateMessage('A new user has joined!'))
 
     socket.on('sendMessage', (message, callback) => {
         const filter = new Filter()
@@ -30,19 +31,19 @@ io.on('connection', (socket) => {
             return callback('Profanity is not allowed!')
         }
 
-        io.emit('message', message)
+        io.emit('message', generateMessage(message))
         callback() // acknowledge success
     })
 
     socket.on('sendLocation', (position, callback) => {
         const url = `https://www.google.com/maps?q=${position.latitude},${position.longitude}`
-        
-        io.emit('message', url)
+
+        io.emit('locationMessage', generateLocationMessage(url))
         callback()
     })
 
     socket.on('disconnect', () => {
-        io.emit('message', 'A user has left')
+        io.emit('message', generateMessage('A user has left'))
     })
 })
 
